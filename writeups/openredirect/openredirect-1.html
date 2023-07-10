@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+        <link rel="stylesheet" href="../../assets/css/styles.css">
+        <link rel="shortcut icon" type="image/png" href="../../assets/img/hacker.png">
+        <title>Open Redirect</title>
+    </head>
+    <body>
+
+        <a href="#" class="scrolltop" id="scroll-top">
+            <i class='bx bx-chevron-up scrolltop__icon'></i>
+        </a>
+
+        <header class="l-header" id="header">
+            <nav class="nav bd-container">
+                <a href="../../index.html" class="nav__logo">Ahmed Hamza</a>
+
+                <div class="nav__menu" id="nav-menu">
+                    <ul class="nav__list">
+                        <li class="nav__item"><a href="../../index.html" class="nav__link">Home</a></li>
+                        <li class="nav__item"><a href="../writeups.html" class="nav__link active-link">Writeups</a></li>
+                        <li class="nav__item"><a href="../../tutorials/tutorials.html" class="nav__link">Tutorials</a></li>
+                        <li class="nav__item"><a href="../../it-project/it-project.html" class="nav__link">IT-Project</a></li>
+                        <li class="nav__item"><a href="" class="nav__link">CV</a></li>
+                        <li><i class='bx bx-moon change-theme' id="theme-button"></i></li>
+                    </ul>
+                </div>
+
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class='bx bx-menu'></i>
+                </div>
+            </nav>
+        </header>
+        <main class="l-main">
+            <section class="menu section bd-container">
+                <h3 class="section-title">Open Redirect Vulnerability</h3>
+                <div>
+
+<pre class="code">
+ Target       : target.co.uk  
+ Weakness     : OpenRedirect
+ Date Of Scan : 2021-2-13
+</pre>
+<br>
+<p dir="rtl">
+
+السلام عليكم , 
+<br>
+ شرح طريقة اكتشاف ثغرة اعادة التوجيه OpenRedirect
+<br>
+<br>
+ما هي ثغرة اعادة التوجيه ؟ 
+<br>
+ثغرة Open Redirect أو ما تسمي أيضا بال Unvaildated Redirect هي إحدى ثغرات الويب التي يكون سببها عدم تحقق مطوري الموقع من الروابط التي يتم توجيه المستخدمين إليها والذي يمكن أن يؤدي لعدة مخاطر أبرزهم و أكثرهم شيوعا هو هجمات ال Phishing أي التصيد الإحتيالي وهي الهجمات اللتي تعتمد علي ال Social Engeneering والإحتيال علي الضحية لجعله يضغط علي رابط ما ليتم اختراقه.
+
+<br>
+<br>
+<img src="1.png" width="700" height="500" alt="Image Is Not Found ...">
+<br>
+<br>
+
+الملخص :
+<br>
+يقوم الموقع باعادة توجيه المستخدمين بطريقة غير امنه, يعني لايقوم بالتحقق من قيمة الباراميتر "app_url" مما يسمح للمهاجم بتوجيه المستخدمين الى مواقع ضارة عند الضغط على الرابط المصاب :
+
+
+<br>
+<br>
+</p>
+
+<pre class="code"> https://target.co.uk/en?$link_path=/&$app_url=  </pre>
+<br>
+
+<b>POC:</b>
+
+<pre class="code"> https://target.co.uk/en?$link_path=/&$app_url=https://www.attacker.com  </pre>
+
+<br>
+
+<p dir="rtl"> 
+خطر الثغرة :
+<br>
+يمكن للمهاجم بان يقوم باستخدام هذه الثغرة لتحويل المستخدمين الى مواقع ضارة مسيطر عليها المهاجم وايضا يقوم بتنفيذ هجمات التصيد الاحتيال 
+
+<br>
+<br>
+
+كيف يتم اصلاح الثغرة : 
+<br>
+1- حاول تجنب عمليات اعادة التوجيه تماما ان امكن. <br>
+2- اذا قمت باستخدام عمليات اعادة التوجيه فقم بتحديد الموقع الذي تريد تحويل المستخدمين اليه فقط. <br>
+3- تنفيذ عمليات التحقق من صحة الهدف الذي سيتم توجيه المستخدمين اليه. <br>
+4- اجعل المطورين على دراية بخطر الثغرة وكيف تحدث. <br>
+<br>
+
+المراجع : 
+<br>
+</p>
+
+<pre class="code">
+ <a href="https://www.acunetix.com/blog/web-security-zone/what-are-open-redirects" target="_blank">https://www.acunetix.com/blog/web-security-zone/what-are-open-redirects  </a></pre>
+
+<br>
+<h2 class="section-title">HackerOne Report</h2>
+<pre class="code">
+ <b>Title:</b> 
+ Open Redirect Vulnerability
+ 
+ <b>Summary:</b>
+ I have found a Open Redirect Vulnerability on https://target.co.uk/en?$link_path=/&$app_url=  
+ The application not checking the value passed by the user to the "app_url" parameter. 
+ 
+ <b>What is Open Redirection?</b>
+ An Open Redirection is when a web application or server uses an invalidated user-submitted link to redirect the user to a given website or page. Even though it seems like a harmless action to let a user decide to which page he wants to be redirected.  
+
+ <b>Steps To Reproduce:</b> 
+ 1. Open this following link https://target.co.uk/en?$link_path=/&$app_url=https://www.yahoo.com  
+ 2. you will be redirected to yahoo.com
+
+ <b>Impact:</b>
+ An attacker can use this vulnerability to redirect users to other malicious websites, which can be used for phishing and similar attacks
+</pre>
+
+</div>
+</section>
+</main>
+
+
+<footer class="footer section bd-container">
+
+</footer>
+
+
+<script src="https://unpkg.com/scrollreveal"></script>
+<script src="../../assets/js/main.js"></script>
+
+</body>
+</html>

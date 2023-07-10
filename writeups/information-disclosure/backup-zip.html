@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+        <link rel="stylesheet" href="../../assets/css/styles.css">
+        <link rel="shortcut icon" type="image/png" href="../../assets/img/hacker.png">
+        <title>Information Disclosure</title>
+    </head>
+    <body>
+
+        <a href="#" class="scrolltop" id="scroll-top">
+            <i class='bx bx-chevron-up scrolltop__icon'></i>
+        </a>
+        
+        <header class="l-header" id="header">
+            <nav class="nav bd-container">
+                <a href="../../index.html" class="nav__logo">Ahmed Hamza</a>
+                <div class="nav__menu" id="nav-menu">
+                    <ul class="nav__list">
+                        <li class="nav__item"><a href="../../index.html" class="nav__link">Home</a></li>
+                        <li class="nav__item"><a href="../writeups.html" class="nav__link active-link">Writeups</a></li>
+                        <li class="nav__item"><a href="../../tutorials/tutorials.html" class="nav__link">Tutorials</a></li>
+                        <li class="nav__item"><a href="../../it-project/it-project.html" class="nav__link">IT-Project</a></li>
+                        <li class="nav__item"><a href="" class="nav__link">CV</a></li>
+                        <li><i class='bx bx-moon change-theme' id="theme-button"></i></li>
+                    </ul>
+                </div>
+
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class='bx bx-menu'></i>
+                </div>
+            </nav>
+        </header>
+
+        <main class="l-main">
+        <section class="menu section bd-container">
+            <h2 class="section-title">Information Disclosure</h2>
+            <div>
+
+
+<h2 class="section-title">HackerOne Report</h2>
+<pre class="code">
+ <b>Title:</b>
+ Information Disclosure via ZIP file 
+
+ <b>Description:</b>
+ Hello Team
+ I found two sub domains has an ZIP file and this file contains source code.  
+
+ <b>Affected URLs:</b>
+ https://ash.target.com/app.zip
+ https://chi.target.com/app.zip
+
+ <b>Proof of Concept:</b>
+ 1. Go To This Link: https://ash.target.com/app.zip
+ 2. Download and extract The zip file 
+ 3. You can read the source code
+
+
+ <b>Steps To Reproduce:</b>
+ 
+ 1. Fuzzing Hidden Directories and Files using ffuf tool:
+ <center><img src="img/backup-zip/1.png"  width="95%" height="300px"></center>
+ 2. Find backups files with Nuclei Vulnerability Scanner:  
+ <center><img src="img/backup-zip/2.png"  width="95%" height="300px"></center>
+ 3. Download and extract
+ <center><img src="img/backup-zip/9.png"  width="95%" height="300px"></center>
+ 4. You can read the source code
+ <center><img src="img/backup-zip/10.png"  width="95%" height="300px"></center>
+ 
+ <b>Impact:</b>
+ An attacker can download this file and read it.
+
+ 
+ <b>Best Regards</b>
+</pre>
+
+
+
+
+</div>
+</section>
+</main>
+
+<footer class="footer section bd-container">
+
+</footer>
+
+<script src="https://unpkg.com/scrollreveal"></script>
+<script src="../../assets/js/main.js"></script>
+
+</body>
+</html>

