@@ -55,29 +55,22 @@
 
  Using GitDump (https://github.com/Ebryx/GitDump.git), I was able to dump the whole .git directory.
 
-
  <b>Proof of Concept:</b>
- 1. Go to https://target.com/.git/
- 2. Using GitDump tool to dump the .git directory.
- 3. python3 git-dump.py https://target.com/.git/
+ 1. python3 git-dump.py https://target.com/.git/
+ 2. It will recover the source code.
 
-
- <b>Steps To Reproduce:</b>
+ <b>Steps To Reproduce: </b>
  
- 1. Fuzzing Hidden Directories and Files using ffuf tool.
+ 1. Fuzzing hidden directories and files using ffuf tool or DotGit extension 
  <center><img src="img/exposed-git/1.png"  width="95%" height="300px"></center>
- 2. Nuclei Vulnerability Scanner.
+ 2. Dump .git directory
  <center><img src="img/exposed-git/2.png"  width="95%" height="300px"></center>
- 3. Dump .git directory.
+ 3. Attacker can read the source code of the application
  <center><img src="img/exposed-git/3.png"  width="95%" height="300px"></center>
- 4. You can read the source code.
- <center><img src="img/exposed-git/9.png"  width="95%" height="300px"></center>
  
  <b>Impact:</b>
  These files may expose sensitive information that may help an malicious user to prepare more advanced attacks.  
 
- 
- <b>Best Regards</b>
 </pre>
 
 
