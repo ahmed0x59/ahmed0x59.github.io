@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+        <link rel="stylesheet" href="../../assets/css/styles.css">
+        <link rel="shortcut icon" type="image/png" href="../../assets/img/hacker.png">
+        <title>Find CSRF</title>
+    </head>
+    <body>
+
+        <a href="#" class="scrolltop" id="scroll-top">
+            <i class='bx bx-chevron-up scrolltop__icon'></i>
+        </a>
+        
+        <header class="l-header" id="header">
+            <nav class="nav bd-container">
+                <a href="../../index.html" class="nav__logo">Ahmed Hamza</a>
+                <div class="nav__menu" id="nav-menu">
+                    <ul class="nav__list">
+                        <li class="nav__item"><a href="../../index.html" class="nav__link">Home</a></li>
+                        <li class="nav__item"><a href="../../writeups/writeups.html" class="nav__link ">Writeups</a></li>
+                        <li class="nav__item"><a href="../../tutorials/tutorials.html" class="nav__link active-link">Tutorials</a></li>
+                        <li class="nav__item"><a href="../../it-project/it-project.html" class="nav__link">IT-Project</a></li>
+                        <li><i class='bx bx-moon change-theme' id="theme-button"></i></li>
+                    </ul>
+                </div>
+
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class='bx bx-menu'></i>
+                </div>
+            </nav>
+        </header>
+
+        <main class="l-main">
+        <section class="menu section bd-container">
+            <h2 class="section-title">CSRF طريقة اكتشاف ثغرة</h2>
+            <div>
+
+<p dir="rtl">
+السلام عليكم , 
+<br>
+طريقة اكتشاف ثغرة CSRF واستغلال الثغرة باستخدام اداة CSRF-POC-Generator
+</p>
+
+<br>
+<pre class="code"> # https://github.com/merttasci/csrf-poc-generator  </pre>
+<br>
+<p dir="rtl"> 
+ماهي ثغرة Cross-Site Request Forgery (CSRF) ؟
+<br>
+تقوم هذه الثغرة بإجبار المستخدم على فعل وظيفة غير مرغوب فيها مثلا كإضافة مستخدم جديد او حذف صورة او تغيير الايميل و الباسورد بدون علم المستخدم.
+<br>
+<br>
+تعتمد بشكل او بأخر على الهندسة الإجتماعية لأنها تتطلب ارسال الرابط الى الضحية , الرابط عبارة عن صفحة ويب بها اكواد خاصة من الموقع المصاب تقوم بتغيير الباسوورد بدون علم الضحية.
+<br>
+<br>
+كيف تحدث الثغرة ؟ 
+<br>
+<br>
+1. تحدث الثغرة عندما لايستطيع الموقع التحقق من قيمة Token الخاصة بالمستخدم , لذالك يقوم Attacker باستغلال هذا الخطأ لارسال طلب تغيير Password بدون قيمة Token لان ال Attacker ليس لديه قيمة Token لانها قيمة فريدة لكل مستخدم مثل cookies  
+<br>
+<br>
+2. تحدث الثغرة عندما لاتجد Token في الRequst  
+<br>
+<br>
+3. تحدث الثغرة عندما يكون Token ثابث ميتغيرش في كل Request 
+<br>
+<br>
+4. تحدث الثغرة عندما يكون Token حجمه صغير يعني سهل تخمينه
+
+<br>
+<br>
+خطوات اكتشاف ثغرة CSRF في موقع XVWA وهو عبارة عن موقع مصاب باشهر الثغرات للتدرب عليه : 
+<br>
+<br>
+<img src="pic/xvwa.png" width="100%" height="350px">
+<br>
+<br>
+
+1.  الطلب و الاستجابة الطبيعية لتغيير password في اداة BurpSuite :
+</p>
+<br>
+<img src="pic/change-pass-1.png" width="100%" height="350px">
+<br>
+<br>
+<p dir="rtl"> 
+ لاحظ بان الموقع يقوم بتغيير الباسوورد بدون قيمة Token التي تثبث بان الطلب من المستخدم الشرعي    
+<br>
+لذالك سيقوم Attacker باستغلال هذا الخطأ ويقوم بانشاء صفحة تقوم بارسال طلب تغيير الباسوورد الى الموقع المصاب , و يقوم بارسال الرابط الى الضحية وعندما يدخل الضحية الى الرابط يتم تنفيذ الطلب بدون علمه
+<br>
+</p>
+<br>
+
+<p dir="rtl">
+بعد اكتشاف الثغرة نقوم باستغلالها وبرمجة صفحة تقوم بارسال الطلب المصاب الى الموقع.
+<br>
+سنقوم باستخدام اداة CSRF-POC-Generator 
+<br>
+<br>
+تنزيل الاداة باتباع الخطوات التالية :
+</p>
+
+<pre class="code">
+ # git clone https://github.com/merttasci/csrf-poc-generator.git
+</pre>
+<br>
+
+<p dir="rtl">
+1. نقوم بالدخول الى المجلد csrf-poc-generator وفتح ملف index.html في المتصفح
+</p>
+<br>
+<img src="pic/poc1.png" width="100%" height="350px">
+<br>
+<br>
+
+<p dir="rtl">
+2. نقوم بنسخ محتوى Request كامل في اداة BurpSuite ووضعه في خانة REQUEST والنقر على Generate PoC Form 
+</p>
+<br>
+<img src="pic/poc2.png" width="100%" height="350px">
+<br>
+<br>
+<p dir="rtl">
+3. ستقوم الاداة بانشاء Form لارسال طلب تغيير الباسوورد , نقوم بتغيير قيمة passwd الى القيمة التي تريدها وقم بحفظ الكود Save as HTML 
+</p>
+<br>
+<p dir="rtl">
+4. ارسال هذا ال Form الى الضحية وعندما يقوم بفتح الرابط والنقر على Submit سيتم تغيير Password الخاص بالضحية وسيتمكن الهكر من الاستيلاء على حساب الضحية , في هذه الحالة تسمى الثغرة :  
+
+</p>
+<p>
+CSRF To Account TakeOver 
+</p>
+<br>
+<img src="pic/takeover1.png" width="100%" height="350px">
+<br>
+<br>
+<p>Source Code: </p>
+<br>
+<img src="pic/takeover2.png" width="100%" height="350px">
+<br>
+</div>
+</section>
+</main>
+
+<footer class="footer section bd-container">
+
+</footer>
+
+<script src="https://unpkg.com/scrollreveal"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="https://code.iconify.design/2/2.0.3/iconify.min.js"></script>
+
+</body>
+</html>

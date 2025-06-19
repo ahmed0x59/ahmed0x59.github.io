@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+        <link rel="stylesheet" href="../../assets/css/styles.css">
+        <link rel="shortcut icon" type="image/png" href="../../assets/img/hacker.png">
+        <title>EyeWitness Tool</title>
+    </head>
+    <body>
+
+        <a href="#" class="scrolltop" id="scroll-top">
+            <i class='bx bx-chevron-up scrolltop__icon'></i>
+        </a>
+        
+        <header class="l-header" id="header">
+            <nav class="nav bd-container">
+                <a href="../../index.html" class="nav__logo">Ahmed Hamza</a>
+                <div class="nav__menu" id="nav-menu">
+                    <ul class="nav__list">
+                        <li class="nav__item"><a href="../../index.html" class="nav__link">Home</a></li>
+                        <li class="nav__item"><a href="../../writeups/writeups.html" class="nav__link ">Writeups</a></li>
+                        <li class="nav__item"><a href="../../tutorials/tutorials.html" class="nav__link active-link">Tutorials</a></li>
+                        <li class="nav__item"><a href="../../it-project/it-project.html" class="nav__link">IT-Project</a></li>
+                        <li><i class='bx bx-moon change-theme' id="theme-button"></i></li>
+                    </ul>
+                </div>
+
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class='bx bx-menu'></i>
+                </div>
+            </nav>
+        </header>
+
+        <main class="l-main" >
+        <section class="menu section bd-container" >
+            <h2 class="section-title">EyeWitness Tool </h2>
+            <div dir="rtl">
+
+<p class="about__description">
+السلام عليكم , 
+<br>
+شرح اداة EyeWitness لاخد Screenshot لكل المجالات الفرعية 
+<br>
+<br>
+تقوم ادة EyeWitness باخد لقطات لكل المجالات الفرعية وتنظيم النتائج في مجلد للاطلاع على جميع Subdomains بطريقة سريعة  
+<br>
+<br>
+1. نقوم بالحصول على كل المجالات الفرعية Subdomains  باستخدام اداة subfinder 
+<br>
+2. نقوم بفلترة كل المجالات الفرعية لاستخراج المجالات النشطة والمجالات الغير موجودة واخراج النتائج في ملف , نقوم باستخدام اداة httprobe
+<br>
+3. استخدام اداة EyeWitness لاخد Screenshot لكل المجالات الفرعية 
+<br>
+<br>
+تنزيل الادوات :
+</p>
+
+<pre class="code" dir="ltr"> sudo apt install subfinder 
+ sudo apt install httprobe 
+ sudo apt install eyewitness 
+</pre>
+<br>
+<p class="about__description">
+1. الحصول على كل المجالات الفرعية Subdomains في موقع vulnweb.com وحفظ النتائج في subdomains.txt  
+<br>
+موقع vulnweb.com هو موقع مصمم لغرض التدرب عليه لاكتشاف الثغرات :
+<br>
+</p>
+<pre class="code" dir="ltr"> subfinder -d vulnweb.com -o subdomains.txt </pre>
+<br>
+<img src="pic/subfinder.png" width="100%" height="100%" alt="Image Is Not Found ...">
+<br>
+<br>
+<br>
+<p class="about__description">
+2. فلترة كل المجالات الفرعية لاستخراج المجالات النشطة وحفظ النتائج في final-subs.txt   
+<br>
+</p>
+<pre class="code" dir="ltr"> cat subdomains.txt | httprobe | tee -a final-subs.txt </pre>
+<br>
+<img src="pic/httprobe.png" width="100%" height="100%" alt="Image Is Not Found ...">
+<br>
+<br>
+<br>
+<p class="about__description">
+3. استخدام اداة EyeWitness لاخد Screenshot لكل المجالات الفرعية 
+<br>
+</p>
+<pre class="code" dir="ltr"> eyewitness -f final-subs.txt --web --timeout 12 -d vulnweb 
+
+ --timeout      Maximum number of seconds to wait while requesting a web page (Default: 7) 
+ --web          HTTP Screenshot using Selenium 
+ -f             Line-separated file containing URLs to capture 
+ -d             Directory name for report output 
+
+</pre>
+<br>
+<img src="pic/eyewitness.png" width="100%" height="100%" alt="Image Is Not Found ...">
+<br>
+<br>
+<p>
+عند الانتهاء نقوم بفتح Report في المتصفح لعرض النتائج بشكل منظم 
+</p>
+<br>
+<img src="pic/eyewitness2.png" width="100%" height="100%" alt="Image Is Not Found ...">
+<br>
+<br>
+<img src="pic/eyewitness3.png" width="100%" height="100%" alt="Image Is Not Found ...">
+<br>
+<br>
+<p>
+سنقوم بانشاء سكربت بلغة Bash لأتمتة كل الاوامر السابقة في امر واحد :
+</p>
+<br>
+<pre class="code" dir="ltr"> Bash Script : script.sh
+ ========================
+ #!/bin/bash
+
+ subfinder  -d  $1  -o  subdomains.txt
+ cat  subdomains.txt  | httprobe |  tee  -a   final-subs.txt
+ eyewitness  -f  final-subs.txt  --web  --timeout 12 -d $1
+ ========================
+</pre>
+<br>
+<p>
+نقوم باعطاء السكربت صلاحيات التنفيذ 
+</p>
+
+<pre class="code" dir="ltr"> sudo chmod +x script.sh  </pre>
+<br>
+<p>
+تنفيذ السكربت مع اسم الموقع فقط بدون https
+</p>
+
+<pre class="code" dir="ltr">
+ Example :
+ ./script.sh target.com
+ ./script.sh vulnweb.com
+</pre>
+<br>
+</div>
+</section>
+</main>
+
+<footer class="footer section bd-container">
+
+</footer>
+
+<script src="https://unpkg.com/scrollreveal"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="https://code.iconify.design/2/2.0.3/iconify.min.js"></script>
+
+</body>
+</html>
