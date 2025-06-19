@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+        <link rel="stylesheet" href="../../assets/css/styles.css">
+        <link rel="shortcut icon" type="image/png" href="../../assets/img/hacker.png">
+        <title>CSRF</title>
+    </head>
+    <body>
+
+        <a href="#" class="scrolltop" id="scroll-top">
+            <i class='bx bx-chevron-up scrolltop__icon'></i>
+        </a>
+
+        <header class="l-header" id="header">
+            <nav class="nav bd-container">
+                <a href="../../index.html" class="nav__logo">Ahmed Hamza</a>
+
+                <div class="nav__menu" id="nav-menu">
+                    <ul class="nav__list">
+                        <li class="nav__item"><a href="../../index.html" class="nav__link">Home</a></li>
+                        <li class="nav__item"><a href="../writeups.html" class="nav__link active-link">Writeups</a></li>
+                        <li class="nav__item"><a href="../../tutorials/tutorials.html" class="nav__link">Tutorials</a></li>
+                        <li class="nav__item"><a href="../../it-project/it-project.html" class="nav__link">IT-Project</a></li>
+                        <li class="nav__item"><a href="" class="nav__link">CV</a></li>
+                        <li><i class='bx bx-moon change-theme' id="theme-button"></i></li>
+                    </ul>
+                </div>
+
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class='bx bx-menu'></i>
+                </div>
+            </nav>
+        </header>
+
+        <main class="l-main">
+        <section class="menu section bd-container">
+        <h2 class="section-title">Cross-Site Request Forgery (CSRF)</h2>
+        <div>   
+        
+        
+<pre class="code">
+ Title        : Missing Server Side Validation of CSRF Token in Change Email Request.  
+ Target       : target.com
+ Weakness     : CSRF
+ Date Of Scan : 2021-5-11
+</pre>
+<br>
+<p dir="rtl">
+ماهي ثغرة CSRF
+<br>
+
+تقوم هذه الثغرة بإجبار المستخدم على فعل وظيفة غير مرغوب فيها مثلا كإضافة مستخدم جديد او حذف صورة او تغيير الايميل و الباسورد بدون علم المستخدم.
+<br>
+<br>
+تعتمد بشكل او بأخر على الهندسة الإجتماعية لأنها تتطلب ارسال الرابط الى الضحية, الرابط عبارة عن صفحة ويب بها اكواد خاصة من الموقع المصاب تقوم بتغيير الايميل بدون علم الضحية.
+<br> 
+<br>
+تحدث الثغرة عندما لايستطيع الموقع التحقق من قيمة Token الخاصة بالمستخدم , لذالك يقوم Attacker باستغلال هذا الخطأ لارسال طلب تغيير Email بدون قيمة Token لان ال Attacker ليس لديه قيمة Token لانها قيمة فريدة لكل مستخدم مثل cookies  
+<br>
+<br>
+خطوات اكتشاف ثغرة CSRF
+<br>
+<br>
+
+1.  الطلب الطبيعي لتغيير Email مع قيمة Token الصحيحة :
+</p>
+<br>
+
+<p>
+<img src="images/csrf-1/1.png" width="100%" height="350px">
+</p>
+
+<br>
+<p dir="rtl">
+
+2. الاستجابة الطبيعية لتغيير Email :  
+<br><br>
+</p>
+
+<p>
+<img src="images/csrf-1/2.png" width="100%" height="350px">
+</p>
+
+<br>
+<p dir="rtl"> 
+3. الطلب بدون قيمة Token , لاحظ بان الموقع لم يتحقق من قيمة Token وقام بتنفيذ الطلب :
+<br>
+</p>
+<br>
+<p>
+<img src="images/csrf-1/3.png" width="100%" height="350px">
+</p>
+<br>
+<br>
+<p dir="rtl"> 
+طريقة استغلال الثغرة :
+<br>
+سيقوم Attacker بانشاء رابط يوجد به باراميتر emailAddress وقيمته ستكون email الخاص بالهكر ويقوم بارسال الرابط الى الضحية وعندما يقوم الضحية بفتح الرابط سيتم تغيير Email الخاص بالضحية الى Email الخاص بالهكر وبذالك يستطيع الهكر تغيير الباسوورد عن طريق Email ويقوم بالاستيلاء على حساب الضحية Account TakeOver
+</p>
+
+<br>
+<b>Exploit:</b>
+<pre class="code">
+ &lt;html&gt;
+ &lt;body&gt;
+ &lt;img src="https://www.target.com/updateOptions.do?language=en-marketCountry=US-graphicSize=1&emailAddress=attacker@gmail.com"&gt; 
+ &lt;/body&gt;
+ &lt;/html&gt;
+</pre>
+<br>
+<p dir="rtl"> 
+خطر الثغرة :
+<br>
+يمكن للمهاجم استغلال هذه الثغرة الأمنية للاستيلاء على الحسابات من خلال ربطها بعنوان يتحكم فيه المهاجم.
+<br><br>
+كيف يتم اصلاح الثغرة : 
+<br>
+يجب أن يكون كل طلب عملية حساسة مصحوبًا بـ Token ويجب التحقق من قيمة Token لكل مستخدم.
+<br><br>
+يجب ان يكون Token :
+<br>
+1. طويل ، عشوائي ، غير متكرر . <br>
+2. فريد لكل جلسة أو حتى لكل عملية. <br>
+3. جزء من URL في GET.  
+<br>
+4. حقل مخفي في POST (نماذج). <br>
+5. لا يستطيع المهاجم معرفة / توقع هذا الرمز المميز وبالتالي لا يمكنه إنشاء طلبات لاستغلال العملية. <br>
+<br>
+
+المراجع : 
+<br>
+</p>
+<pre class="code">
+ <a href="https://owasp.org/www-community/attacks/csrf" target="_blank">https://owasp.org/www-community/attacks/csrf</a> 
+</pre>
+<br>
+
+<h2 class="section-title">HackerOne Report</h2>
+<pre class="code">
+<b> Title:</b>
+ Missing Server Side Validation of CSRF Token in Change Email Request.  
+
+<b> Summary:</b>
+ Hello Security Team,
+ I have found a CSRF token bypass on the Email Change Functionality.
+
+ <b>Description:</b>  
+ Missing Server Side Validation of CSRF Token in Change Email Request. 
+ This request even works without TOKEN.
+
+<b> Steps To Reproduce:</b>
+ 1. Login to your Account.
+ 2. Go to Preferences.
+ 3. Change your email.
+ 4. Submit the form.
+ 5. Intercept this request in burp suite.
+ 6. Remove TOKEN parameter from the request.
+ 7. Forward the request.
+ 8. You'll notice the email change successfully.
+
+
+<b> POC:</b>
+ Send the script to the victim to make them click.
+
+ &lt;html&gt;
+ &lt;body&gt;
+ &lt;img src="https://www.target.com/updateOptions.do?language=en-marketCountry=US-graphicSize=1&emailAddress=attacker@gmail.com"&gt; 
+ &lt;/body&gt;
+ &lt;/html&gt;
+
+<b> Impact:</b>
+ An attacker can exploit this vulnerability in order to take over accounts by associating them with an address controlled by the attacker.  
+
+<b> Recommended Fix:</b>
+ For CSRF Protection:
+ Each critical operation request must be accompanied with a "token"
+ 
+ <b>Token is:</b>
+ 1. Long, Random, not repeated for application lifetime.
+ 2. Unique per session or even per operation
+ 3. Part of URL in GET
+ 4. Hidden Field in POST (forms)
+ 5. Attacker cannot know / predict this token and hence cannot create requests to exploit the operation.
+</pre>
+
+</div>
+</section>
+</main>
+
+
+<footer class="footer section bd-container">
+
+</footer>
+     
+<script src="https://unpkg.com/scrollreveal"></script>
+<script src="../../assets/js/main.js"></script>
+
+</body>
+</html>

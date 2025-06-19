@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+        <link rel="stylesheet" href="../../assets/css/styles.css">
+        <link rel="shortcut icon" type="image/png" href="../../assets/img/hacker.png">
+        <title>Exposed GIT repository</title>
+    </head>
+    <body>
+
+        <a href="#" class="scrolltop" id="scroll-top">
+            <i class='bx bx-chevron-up scrolltop__icon'></i>
+        </a>
+        
+        <header class="l-header" id="header">
+            <nav class="nav bd-container">
+                <a href="../../index.html" class="nav__logo">Ahmed Hamza</a>
+                <div class="nav__menu" id="nav-menu">
+                    <ul class="nav__list">
+                        <li class="nav__item"><a href="../../index.html" class="nav__link">Home</a></li>
+                        <li class="nav__item"><a href="../writeups.html" class="nav__link active-link">Writeups</a></li>
+                        <li class="nav__item"><a href="../../tutorials/tutorials.html" class="nav__link">Tutorials</a></li>
+                        <li class="nav__item"><a href="../../it-project/it-project.html" class="nav__link">IT-Project</a></li>
+                        <li class="nav__item"><a href="" class="nav__link">CV</a></li>
+                        <li><i class='bx bx-moon change-theme' id="theme-button"></i></li>
+                    </ul>
+                </div>
+
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class='bx bx-menu'></i>
+                </div>
+            </nav>
+        </header>
+
+        <main class="l-main">
+        <section class="menu section bd-container">
+            <h2 class="section-title">Exposed GIT repository</h2>
+            <div>
+
+
+<h2 class="section-title">HackerOne Report</h2>
+<pre class="code">
+ <b>Title:</b>
+ Exposed GIT repository
+
+ <b>Weakness:</b>
+ Information Disclosure 
+ 
+ <b>Description:</b>
+ Hello team,
+ I've detected GIT repository Folder on https://target.com
+ Git metadata directory (.git) was found in this folder, An attacker can extract sensitive information by requesting the hidden metadata directory.  
+
+ Using GitDump (https://github.com/Ebryx/GitDump.git), I was able to dump the whole .git directory.
+
+ <b>Proof of Concept:</b>
+ 1. python3 git-dump.py https://target.com/.git/
+ 2. It will recover the source code.
+
+ <b>Steps To Reproduce: </b>
+ 
+ 1. Fuzzing hidden directories and files using ffuf tool or DotGit extension 
+ <center><img src="img/exposed-git/1.png"  width="95%" height="300px"></center>
+ 2. Dump .git directory
+ <center><img src="img/exposed-git/2.png"  width="95%" height="300px"></center>
+ 3. Attacker can read the source code of the application
+ <center><img src="img/exposed-git/3.png"  width="95%" height="300px"></center>
+ 
+ <b>Impact:</b>
+ These files may expose sensitive information that may help an malicious user to prepare more advanced attacks.  
+
+</pre>
+
+
+
+
+</div>
+</section>
+</main>
+
+<footer class="footer section bd-container">
+
+</footer>
+
+<script src="https://unpkg.com/scrollreveal"></script>
+<script src="../../assets/js/main.js"></script>
+
+</body>
+</html>

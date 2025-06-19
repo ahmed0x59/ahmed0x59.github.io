@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+        <link rel="stylesheet" href="../../assets/css/styles.css">
+        <link rel="shortcut icon" type="image/png" href="../../assets/img/hacker.png">
+        <title>CSRF</title>
+    </head>
+    <body>
+
+        <a href="#" class="scrolltop" id="scroll-top">
+            <i class='bx bx-chevron-up scrolltop__icon'></i>
+        </a>
+
+        <header class="l-header" id="header">
+            <nav class="nav bd-container">
+                <a href="../../index.html" class="nav__logo">Ahmed Hamza</a>
+
+                <div class="nav__menu" id="nav-menu">
+                    <ul class="nav__list">
+                        <li class="nav__item"><a href="../../index.html" class="nav__link">Home</a></li>
+                        <li class="nav__item"><a href="../writeups.html" class="nav__link active-link">Writeups</a></li>
+                        <li class="nav__item"><a href="../../tutorials/tutorials.html" class="nav__link">Tutorials</a></li>
+                        <li class="nav__item"><a href="../../it-project/it-project.html" class="nav__link">IT-Project</a></li>
+                        <li class="nav__item"><a href="" class="nav__link">CV</a></li>
+                        <li><i class='bx bx-moon change-theme' id="theme-button"></i></li>
+                    </ul>
+                </div>
+
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class='bx bx-menu'></i>
+                </div>
+            </nav>
+        </header>
+
+        <main class="l-main">
+        <section class="menu section bd-container">
+        <h2 class="section-title">Cross-Site Request Forgery (CSRF)</h2>
+        <div>   
+        
+        
+<pre class="code">
+ Title        : CSRF to Stored HTML injection    
+ Target       : target.com
+ Weakness     : CSRF
+ Date Of Scan : 2021-5-10
+</pre>
+<br>
+<p dir="rtl">
+ماهي ثغرة CSRF
+<br>
+
+تقوم هذه الثغرة بإجبار المستخدم على فعل وظيفة غير مرغوب فيها مثلا كإضافة مستخدم جديد او حذف صورة او تغيير الايميل و الباسورد بدون علم المستخدم.
+<br>
+<br>
+تعتمد بشكل او بأخر على الهندسة الإجتماعية لأنها تتطلب ارسال الرابط الى الضحية, الرابط عبارة عن صفحة ويب بها اكواد خاصة من الموقع المصاب تقوم بتغيير قيمة الحقول في الموقع بدون علم الضحية.
+<br> 
+<br>
+تحدث الثغرة عندما لايستطيع الموقع التحقق من قيمة Token الخاصة بالمستخدم , لذالك يقوم Attacker باستغلال هذا الخطأ لارسال طلب اضافة اكواد HTML في بعض الحقول. 
+<br>
+<br>
+خطوات اكتشاف ثغرة CSRF
+<br>
+1. تسجيل الدخول إلى حسابك ثم الانتقال إلى قسم الاعدادات
+<br>
+2. تغيير اسم الشركة الخاص بك و إرسال النموذج بعد التعديل
+<br>
+3. اعترض هذا الطلب في أداة Burpsuite
+<br>
+4. قم بإزالة ال Token وارسال الطلب
+<br>
+5. ستلاحظ تغيير العنوان بنجاح بدون التحقق من ال Token
+<br>
+</p>
+<br>
+
+<b>POC:</b>
+<br>
+<br>
+<img src="images/csrf-2/1.png" width="100%" height="350px">
+<br>
+<br>
+<br>
+<img src="images/csrf-2/2.png" width="100%" height="350px">
+<br>
+<br>
+<b>Source Code:</b>
+<br>
+<br>
+<img src="images/csrf-2/3.png" width="100%" height="350px">
+<br>
+<br>
+<p dir="rtl"> 
+خطر الثغرة :
+<br>
+يمكن للمهاجم استغلال هذه الثغرة الأمنية لاجبار المستخدم على تغيير معلومات حسابه الى اكواد HTML ضارة
+<br><br>
+كيف يتم اصلاح الثغرة : 
+<br>
+يجب أن يكون كل طلب عملية حساسة مصحوبًا بـ Token ويجب التحقق من قيمة Token لكل مستخدم.
+<br><br>
+يجب ان يكون Token :
+<br>
+1. طويل ، عشوائي ، غير متكرر . <br>
+2. فريد لكل جلسة أو حتى لكل عملية. <br>
+3. جزء من URL في GET.  
+<br>
+4. حقل مخفي في POST (نماذج). <br>
+5. لا يستطيع المهاجم معرفة / توقع هذا الرمز المميز وبالتالي لا يمكنه إنشاء طلبات لاستغلال العملية. <br>
+<br>
+
+المراجع : 
+<br>
+</p>
+<pre class="code">
+ <a href="https://owasp.org/www-community/attacks/csrf" target="_blank">https://owasp.org/www-community/attacks/csrf</a> 
+ <a href="https://www.acunetix.com/vulnerabilities/web/html-injection" target="_blank">https://www.acunetix.com/vulnerabilities/web/html-injection</a> 
+</pre>
+<br>
+
+<h2 class="section-title">HackerOne Report</h2>
+<pre class="code">
+<b> Title:</b>
+ CSRF to Stored HTML injection
+
+<b> Summary:</b>
+ Hello Security Team,
+ I have found Stored HTML injection on https://www.target.com and Bypass Token. 
+
+ <b>Description:</b>  
+ Missing Server Side Validation of CSRF Token in Update Address with malicious HTML code. 
+ This request even works without TOKEN.
+
+<b> Steps To Reproduce:</b>
+ 1. Login to your Account.
+ 2. Go to Preferences.
+ 3. Change your CompanyName.
+ 4. Submit the form.
+ 5. Intercept this request in burp suite.
+ 6. Remove TOKEN parameter from the request.
+ 7. Forward the request.
+ 8. You'll notice the Address change successfully.
+
+
+<b> POC:</b>
+ Send the script to the victim to make them click.
+
+<img src="images/csrf-2/1.png" width="100%" height="350px">
+
+<b> Impact:</b>
+ An attacker can exploit this vulnerability in order to change Information and update the address to malicious HTML Injection.   
+ 
+</pre>
+
+</div>
+</section>
+</main>
+
+
+<footer class="footer section bd-container">
+
+</footer>
+     
+<script src="https://unpkg.com/scrollreveal"></script>
+<script src="../../assets/js/main.js"></script>
+
+</body>
+</html>

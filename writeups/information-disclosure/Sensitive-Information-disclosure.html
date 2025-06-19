@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+        <link rel="stylesheet" href="../../assets/css/styles.css">
+        <link rel="shortcut icon" type="image/png" href="../../assets/img/hacker.png">
+        <title>Sensitive Information Disclosure Through Config File </title>
+    </head>
+    <body>
+
+        <a href="#" class="scrolltop" id="scroll-top">
+            <i class='bx bx-chevron-up scrolltop__icon'></i>
+        </a>
+
+        <header class="l-header" id="header">
+            <nav class="nav bd-container">
+                <a href="../../index.html" class="nav__logo">Ahmed Hamza</a>
+
+                <div class="nav__menu" id="nav-menu">
+                    <ul class="nav__list">
+                        <li class="nav__item"><a href="../../index.html" class="nav__link">Home</a></li>
+                        <li class="nav__item"><a href="../writeups.html" class="nav__link active-link">Writeups</a></li>
+                        <li class="nav__item"><a href="../../tutorials/tutorials.html" class="nav__link">Tutorials</a></li>
+                        <li class="nav__item"><a href="../../it-project/it-project.html" class="nav__link">IT-Project</a></li>
+                        <li><i class='bx bx-moon change-theme' id="theme-button"></i></li>
+                    </ul>
+                </div>
+
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class='bx bx-menu'></i>
+                </div>
+            </nav>
+        </header>
+
+        <main class="l-main">
+        <section class="menu section bd-container">
+        <h2 class="section-title" dir="rtl">Sensitive Information Disclosure Through Config File  </h2>
+
+        <div>   
+        
+        
+<pre class="code">
+ <b>Title    : Sensitive Information Disclosure Through Config File </b>
+ <b>Weakness : Information Disclosure </b>
+ <b>Severity : High </b>
+ <b>Impact   : An attacker can access private information. </b> 
+   
+ <b>Steps To Reproduce:</b>
+ <b>└─$ ffuf -c -ac -r -u https://target.com/FUZZ -w wordlist.txt </b>
+ 
+ <b>Wordlists:</b>
+ <b>1. https://wordlists.assetnote.io</b>
+ <b>2. https://github.com/danielmiessler/SecLists</b>
+ <b>3. https://github.com/six2dez/OneListForAll</b>
+</pre>
+<br>
+<br>
+<img src="poc-2.png" width="100%" height="350px">
+<br>
+<br>
+<br>
+</div>
+
+</section>
+</main>
+
+
+<footer class="footer section bd-container">
+
+</footer>
+     
+<script src="https://unpkg.com/scrollreveal"></script>
+<script src="../../assets/js/main.js"></script>
+
+</body>
+</html>

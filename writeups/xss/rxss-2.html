@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+        <link rel="stylesheet" href="../../assets/css/styles.css">
+        <link rel="shortcut icon" type="image/png" href="../../assets/img/hacker.png">
+        <title>Reflected XSS</title>
+    </head>
+    <body>
+
+        <a href="#" class="scrolltop" id="scroll-top">
+            <i class='bx bx-chevron-up scrolltop__icon'></i>
+        </a>
+
+        <header class="l-header" id="header">
+            <nav class="nav bd-container">
+                <a href="../../index.html" class="nav__logo">Ahmed Hamza</a>
+
+                <div class="nav__menu" id="nav-menu">
+                    <ul class="nav__list">
+                        <li class="nav__item"><a href="../../index.html" class="nav__link">Home</a></li>
+                        <li class="nav__item"><a href="../../writeups/writeups.html" class="nav__link active-link">Writeups</a></li>
+                        <li class="nav__item"><a href="../../tutorials/tutorials.html" class="nav__link">Tutorials</a></li>
+                        <li class="nav__item"><a href="../../it-project/it-project.html" class="nav__link">IT-Project</a></li>
+                        <li class="nav__item"><a href="" class="nav__link">CV</a></li>
+                        <li><i class='bx bx-moon change-theme' id="theme-button"></i></li>
+                    </ul>
+                </div>
+
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class='bx bx-menu'></i>
+                </div>
+            </nav>
+        </header>
+        
+        <main class="l-main">
+        <section class="menu section bd-container" >
+            <h2 class="section-title">Reflected XSS</h2>
+            <div>
+           
+<pre class="code">
+ Target       : target.eu
+ Weakness     : Reflected-XSS
+ Date Of Scan : 2021-3-11
+</pre>
+<br>
+<p dir="rtl">
+
+السلام عليكم , 
+<br>
+ شرح طريقة اكتشاف ثغرة Reflected XSS
+<br>
+<br>
+ماهي ثغرة Reflected XSS ؟ <br>
+تحدث ثغرة XSS عندما يسمح موقع الويب بتنفيذ اكواد جافاسكربت في متصفح المستخدم الذي يزور الموقع , لذالك يقوم المهاجم باستغلال 
+هاذا الخطأ لتنفيذ اكواد خبيثة في متصفح الضحية وسرقة ملفات Cookies وغيرها من البيانات ... <br> 
+<br>
+
+خطوات اكتشاف ثغرة Reflected XSS
+<br>
+<br>
+
+1.   نقوم بفتح الرابط التالي :
+<br>
+</p>
+
+<pre class="code"> https://resources.target.com/?q=TestXSS&lt;/SCRIPT&gt;&lt;SCRIPT&gt;alert(String.fromCharCode(88,83,83))&lt;/SCRIPT>  </pre>
+
+<br>
+
+<p dir="rtl">
+2. سيتم تنفيذ السكربت في الموقع المصاب :
+<br>
+</p>
+
+<br>
+<img src="images/xss2/1.png" width="100%" height="350px">
+<br>
+<br>
+<b>Source Code:</b>
+<br>
+<br>
+<img src="images/xss2/2.png" width="100%" height="350px">
+
+<br>
+<br>
+<br>
+
+<p dir="rtl"> 
+خطر الثغرة :
+<br>
+يستطيع المهاجم استغلال الثغرة وسرقة ملفات cookies من الضحية والاستيلاء على الحساب , وتنفيذ اكواد جافاسكربت للتجسس على الضحية مثل keylogger, وتغيير شكل الصفحة والتعديل عليها واضافة صور وفيديو ويمكن تحويل الضحية الى مواقع اخرى ...
+
+<br>
+<br>
+كيف يتم اصلاح الثغرة : 
+<br>
+نقوم باستخدام Content Security Policy (CSP) لمنع تنفيذ اي سكربت ضار 
+<br>
+<br>
+المراجع : 
+</p>
+
+<pre class="code"> <a href="https://portswigger.net/web-security/cross-site-scripting" target="_blank">https://portswigger.net/web-security/cross-site-scripting  </a></pre>
+
+
+</div>
+</section>
+</main>
+
+<footer class="footer section bd-container">
+
+</footer>
+
+<script src="https://unpkg.com/scrollreveal"></script>
+<script src="../../assets/js/main.js"></script>
+
+</body>
+</html>

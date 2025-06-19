@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+        <link rel="stylesheet" href="../../assets/css/styles.css">
+        <link rel="shortcut icon" type="image/png" href="../../assets/img/hacker.png">
+        <title>Broken Access Control: IDOR </title>
+    </head>
+    <body>
+
+        <a href="#" class="scrolltop" id="scroll-top">
+            <i class='bx bx-chevron-up scrolltop__icon'></i>
+        </a>
+
+        <header class="l-header" id="header">
+            <nav class="nav bd-container">
+                <a href="../../index.html" class="nav__logo">Ahmed Hamza</a>
+
+                <div class="nav__menu" id="nav-menu">
+                    <ul class="nav__list">
+                        <li class="nav__item"><a href="../../index.html" class="nav__link">Home</a></li>
+                        <li class="nav__item"><a href="../writeups.html" class="nav__link active-link">Writeups</a></li>
+                        <li class="nav__item"><a href="../../tutorials/tutorials.html" class="nav__link">Tutorials</a></li>
+                        <li class="nav__item"><a href="../../it-project/it-project.html" class="nav__link">IT-Project</a></li>
+                        <li><i class='bx bx-moon change-theme' id="theme-button"></i></li>
+                    </ul>
+                </div>
+
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class='bx bx-menu'></i>
+                </div>
+            </nav>
+        </header>
+
+        <main class="l-main">
+        <section class="menu section bd-container">
+        <h2 class="section-title" dir="rtl">Broken Access Control: IDOR </h2>
+
+        <div>   
+        
+        
+<pre class="code">
+ <b>Title    : IDOR To Update Personal Data Of Other Users</b>
+ <b>Weakness : Broken Access Control - IDOR
+ <b>Severity : Medium (4-6) </b>
+ <b>Impact   : An Attacker Could Update Personal Data Of Other Users </b> 
+   
+ <b>Steps To Reproduce:</b>
+ <b>1. Register two accounts (attacker,victim)</b>
+ <b>2. Login to attacker account  </b>
+ <b>3. Navigate to "User Profile" and update "Your personal data"</b>
+ <b>4. Click on the "save changes" button and capture the request on BurpSuite</b>
+ <b>5. Now change the Id parameter to victim id , and you successfully change victim personal data  </b>
+
+ <b>Fuzzing Id Parameter:</b>
+ <b>└─$ wfuzz -d 'message={"Id":"FUZZ","username":"POC"}&token=ey...' -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' -c -w ~/Desktop/fuzz-id.txt -u "https://www.target.com/xxx/updateUserProfile"  <b>
+ 
+ <b>Reference:</b>
+ <b>1. <a href="https://portswigger.net/web-security/access-control/idor" target="_blank">https://portswigger.net/web-security/access-control/idor  </a></b>
+ <b>2. <a href="https://owasp.org/Top10/A01_2021-Broken_Access_Control/" target="_blank">https://owasp.org/Top10/A01_2021-Broken_Access_Control  </a></b>
+</pre>
+<br>
+<br>
+<img src="1.png" width="100%" height="350px">
+<br>
+<br>
+
+
+</div>
+
+</section>
+</main>
+
+
+<footer class="footer section bd-container">
+
+</footer>
+     
+<script src="https://unpkg.com/scrollreveal"></script>
+<script src="../../assets/js/main.js"></script>
+
+</body>
+</html>
