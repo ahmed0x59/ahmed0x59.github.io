@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+        <link rel="stylesheet" href="../../assets/css/styles.css">
+        <link rel="shortcut icon" type="image/png" href="../../assets/img/hacker.png">
+        <title>MHN-Troubleshooting</title>
+    </head>
+    <body>
+
+        <a href="#" class="scrolltop" id="scroll-top">
+            <i class='bx bx-chevron-up scrolltop__icon'></i>
+        </a>
+        
+        <header class="l-header" id="header">
+            <nav class="nav bd-container">
+                <a href="../../index.html" class="nav__logo">Ahmed Hamza</a>
+                <div class="nav__menu" id="nav-menu">
+                    <ul class="nav__list">
+                        <li class="nav__item"><a href="../../index.html" class="nav__link">Home</a></li>
+                        <li class="nav__item"><a href="../../writeups/writeups.html" class="nav__link ">Writeups</a></li>
+                        <li class="nav__item"><a href="../../tutorials/tutorials.html" class="nav__link active-link">Tutorials</a></li>
+                        <li class="nav__item"><a href="../../it-project/it-project.html" class="nav__link">IT-Project</a></li>
+
+                        <li><i class='bx bx-moon change-theme' id="theme-button"></i></li>
+                    </ul>
+                </div>
+
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class='bx bx-menu'></i>
+                </div>
+            </nav>
+        </header>
+
+        <main class="l-main">
+        <section class="menu section bd-container">
+            <h2 class="section-title" dir="rtl">MHN-Troubleshooting</h2>
+            <div>
+
+<p dir="rtl">
+
+أهم الاوامر المستخدمة لحل المشاكل في تقنية مصائد الاختراق Modern Honey Network
+ 
+
+<br>
+</p>
+<br>
+<pre class="code" dir="ltr">
+ Troubleshooting : 
+ ===============
+ 
+ sudo supervisorctl status 
+ sudo supervisorctl stop all  
+ sudo supervisorctl start all  
+ sudo supervisorctl update 
+
+ sudo supervisord 
+ sudo service supervisor status
+ sudo service supervisor start 
+ sudo service supervisor reload 
+ 
+ sudo systemctl status nginx.service 
+ sudo systemctl enable nginx.service 
+ sudo systemctl start  nginx.service 
+</pre>
+
+<pre class="code" dir="ltr">
+ Fix Error in mhn-celery-worker : 
+ ==============================
+ 
+ cd /var/log/mhn/ 
+ sudo chown www-data mhn.log  
+ sudo supervisorctl start mhn-celery-worker 
+ sudo supervisorctl restart mhn-celery-worker 
+</pre>
+
+<pre class="code" dir="ltr">
+ Disable Collector Data : 
+ ======================
+ 
+ cd /opt/mhn/scripts 
+ sudo ./disable_collector.sh 
+</pre>
+
+<pre class="code" dir="ltr">
+ Delete Data From MHN : 
+ ====================
+ 
+ mongo mnemosyne 
+ db.session.remove({}) 
+ db.metadata.remove({}) 
+ db.counts.remove({}) 
+ db.file.remove({}) 
+ db.hpfeed.remove({}) 
+ db.dork.remove({}) 
+ db.url.remove({}) 
+ db.daily_stats.remove({}) 
+</pre>
+
+<pre class="code" dir="ltr">
+ Remove MHN : 
+ ==========
+ 
+ sudo supervisorctl stop all 
+ sudo rm -rf /opt/mhn /opt/hpfeeds* /opt/honeymap /var/log/mhn /etc/supervisor/conf.d/*.conf /opt/mnemosyne 
+ sudo supervisorctl update 
+</pre>
+
+</div>
+</section>
+</main>
+
+<footer class="footer section bd-container">
+
+</footer>
+
+<script src="https://unpkg.com/scrollreveal"></script>
+<script src="../../assets/js/main.js"></script>
+
+
+</body>
+</html>

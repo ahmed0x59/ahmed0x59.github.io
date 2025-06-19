@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+        <link rel="stylesheet" href="../../assets/css/styles.css">
+        <link rel="shortcut icon" type="image/png" href="../../assets/img/hacker.png">
+        <title>Pivoting & Havoc C2 Framework</title>
+    </head>
+    <body>
+
+        <a href="#" class="scrolltop" id="scroll-top">
+            <i class='bx bx-chevron-up scrolltop__icon'></i>
+        </a>
+        
+        <header class="l-header" id="header">
+            <nav class="nav bd-container">
+                <a href="../../index.html" class="nav__logo">Ahmed Hamza</a>
+                <div class="nav__menu" id="nav-menu">
+                    <ul class="nav__list">
+                        <li class="nav__item"><a href="../../index.html" class="nav__link">Home</a></li>
+                        <li class="nav__item"><a href="../../writeups/writeups.html" class="nav__link ">Writeups</a></li>
+                        <li class="nav__item"><a href="../../tutorials/tutorials.html" class="nav__link active-link">Tutorials</a></li>
+                        <li class="nav__item"><a href="../../it-project/it-project.html" class="nav__link">IT-Project</a></li>
+                        <li><i class='bx bx-moon change-theme' id="theme-button"></i></li>
+                    </ul>
+                </div>
+
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class='bx bx-menu'></i>
+                </div>
+            </nav>
+        </header>
+
+        <main class="l-main">
+        <section class="menu section bd-container">
+            <h2 class="section-title">Pivoting & Havoc C2 Framework</h2>
+            <div>
+
+<pre class="code">
+ 1. Build Pivoting Lab
+ 2. Exploit Vulnerable Windows (Public IP)
+ 3. Pivoting To Internal Network
+ 4. Exploit Vulnerable Linux (Private IP)
+ 5. Using Havoc C2 Framework
+</pre>
+<br>
+<p>
+Screenshot :
+</p>
+<br>
+<img src="pic/1.png" width="100%" height="350px">
+<br>
+<br>
+<img src="pic/2.png" width="100%" height="350px">
+<br>
+<br>
+<img src="pic/3.png" width="100%" height="350px">
+<br>
+<br>
+<img src="pic/4.png" width="100%" height="350px">
+<br>
+<br>
+<img src="pic/5.png" width="100%" height="350px">
+<br>
+<br>
+<img src="pic/6.png" width="100%" height="350px">
+<br>
+<br>
+<img src="pic/7.png" width="100%" height="350px">
+<br>
+<br>
+<img src="pic/8.png" width="100%" height="350px">
+<br>
+<br>
+<img src="pic/9.png" width="100%" height="350px">
+<br>
+<br>
+
+<p dir="ltr" class="about__description">
+Video : 
+</p>
+<iframe width="100%" height="350px" src="https://www.youtube.com/embed/EnGu8Utjsd8" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<br>
+<br>
+
+
+<pre class="code"> R1 Configuration : Static Nat & Default Routing:  
+ =================================================
+ R1# config terminal
+ R1(config)# int f1/0
+ R1(config-if)# ip address 172.16.1.1 255.255.255.0
+ R1(config-if)# no shutdown
+ R1(config-if)# exit
+ R1(config)# int f2/0
+ R1(config-if)# ip address 172.16.2.1 255.255.255.0
+ R1(config-if)# no shutdown
+ R1(config-if)# exit
+ R1(config)# int f0/0
+ R1(config-if)# ip address 200.30.20.1 255.255.255.252
+ R1(config-if)# no shutdown
+ R1(config-if)# exit
+ R1(config)# ip nat inside source static 172.16.1.2 200.30.20.1  
+ R1(config)# int f1/0
+ R1(config-if)# ip nat inside
+ R1(config-if)# exit
+ R1(config)# int f0/0
+ R1(config-if)# ip nat outside
+ R1(config-if)# exit
+ R1(config)# ip route 0.0.0.0 0.0.0.0 200.30.20.2
+ R1(config)# do wr </pre>
+ 
+ <pre class="code"> R2 Configuration:
+ ==================
+ R2# config terminal
+ R2(config)# int f1/0
+ R2(config-if)# ip address 10.0.0.1 255.255.255.0
+ R2(config-if)# no shutdown
+ R2(config-if)# exit
+ R2(config)# int f0/0
+ R2(config-if)# ip address 200.30.20.2 255.255.255.252  
+ R2(config-if)# no shutdown
+ R2(config-if)# exit </pre>
+ 
+ <pre class="code"> Static IP Address (Windows , Kali , Vuln-Linux-Server):  
+ =======================================================
+ Windows:
+ Change adapter optipns > Ethernet Properties > TCP/IPv4
+ IP address  : 172.16.1.2
+ Subnet Mask : 255.255.255.0
+ Default GW  : 172.16.1.1
+ ============================
+ Kali-Linux:
+ sudo ifconfig eth0 10.0.0.2 netmask 255.255.255.0
+ sudo route add default gw 10.0.0.1 eth0
+ ============================
+ Vuln-Linux-Server:
+ sudo ifconfig eth0 172.16.2.2 netmask 255.255.255.0
+ sudo route add default gw 172.16.2.1 eth0
+ ============================
+ </pre>
+ 
+ <pre class="code"> Pivoting:
+ ==========
+ Kali:
+ ./chisel server -p 8001 --reverse
+
+ Windows:
+ chisel.exe client 10.0.0.2:8001 R:1080:socks  
+</pre>
+
+
+</div>
+</section>
+</main>
+
+<footer class="footer section bd-container">
+
+</footer>
+
+<script src="https://unpkg.com/scrollreveal"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="https://code.iconify.design/2/2.0.3/iconify.min.js"></script>
+
+</body>
+</html>
